@@ -1,0 +1,16 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "Programada-2/lib/lucene-analyzers-common-8.5.2.jar",
+        "Programada-2/lib/lucene-core-8.5.2.jar",
+        "Programada-2/lib/lucene-demo-8.5.2.jar",
+        "Programada-2/lib/lucene-queryparser-8.5.2.jar",
+        "Programada-2/lib/jsoup-1.13.1.jar"
+    ],
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    }
+}
