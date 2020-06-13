@@ -7,6 +7,7 @@ package main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -44,39 +45,29 @@ public class main {
     }
 
     public static void main(final String[] args) throws IOException {
-        // Normalization aux = new Normalization();
-        String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. \n"
-                + "Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos \n"
-                + "relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
-        // // aux.eliminateStopWords(text.toLowerCase()).forEach(System.out::println);
+        Normalization aux = new Normalization();
+        String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
         // aux.readText();
-        String clean="";
 
+        System.out.println(text);
         Analyzer analyzer = CustomAnalyzer.builder()
         .withTokenizer("standard")
         .addTokenFilter("lowercase")
         .addTokenFilter("snowballPorter")
         .build();
 
+        text=aux.cleanString(text).toLowerCase();
+        System.out.println(text);
+        String lista = aux.eliminateStopWords(text);
+        // System.out.println(lista);
+        List<String> result = analyze(lista, analyzer);
 
-        List<String> result = analyze(text, analyzer);
-        // PorterStemmer a = new PorterStemmer();
-        // for (int i = 0; i < text.length(); i++) {
-        //     a.setCurrent(text);
-        //     a.stem();
-        //     String resulado = a.getCurrent();
-        //     System.out.println(resulado);
+        Iterator iter= result.iterator();
+        while(iter.hasNext()){
+            System.out.println(iter.next());
+        }
 
-        // }
-        int num =0;
-         for(String element : result){
-         if(num%5==0){
-             System.out.println();
-             num++;
-         }      
-         System.out.print(element+ " ");
-         num++;
-         }
+
     }
 
 }
