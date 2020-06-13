@@ -13,7 +13,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.tartarus.snowball.ext.PorterStemmer;
+import org.tartarus.snowball.ext.SpanishStemmer;
 
 import modules.Normalization;
 
@@ -28,25 +31,27 @@ public class main {
      * @throws IOException
      */
 
-
-    public static List<String> analyze(String text, Analyzer analyzer) throws IOException{
+    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
         List<String> result = new ArrayList<String>();
         TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
+        tokenStream= new SnowballFilter(tokenStream,"Spanish");
         CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
         tokenStream.reset();
-        while(tokenStream.incrementToken()) {
-           result.add(attr.toString());
-        }       
+        while (tokenStream.incrementToken()) {
+            result.add(attr.toString());
+        }
         return result;
     }
+
     public static void main(final String[] args) throws IOException {
         // Normalization aux = new Normalization();
-         String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. \n"
-         +"Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos \n"
-         +"relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
-        // //  aux.eliminateStopWords(text.toLowerCase()).forEach(System.out::println);
+        String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. \n"
+                + "Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos \n"
+                + "relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
+        // // aux.eliminateStopWords(text.toLowerCase()).forEach(System.out::println);
         // aux.readText();
-        
+        String clean="";
+
         Analyzer analyzer = CustomAnalyzer.builder()
         .withTokenizer("standard")
         .addTokenFilter("lowercase")
@@ -54,12 +59,24 @@ public class main {
         .build();
 
 
-    List<String> result = analyze(text, analyzer);
-         
-    for(String element : result){
-        System.out.println(element);
+        List<String> result = analyze(text, analyzer);
+        // PorterStemmer a = new PorterStemmer();
+        // for (int i = 0; i < text.length(); i++) {
+        //     a.setCurrent(text);
+        //     a.stem();
+        //     String resulado = a.getCurrent();
+        //     System.out.println(resulado);
+
+        // }
+        int num =0;
+         for(String element : result){
+         if(num%5==0){
+             System.out.println();
+             num++;
+         }      
+         System.out.print(element+ " ");
+         num++;
+         }
     }
-        }
-        
+
 }
-    
