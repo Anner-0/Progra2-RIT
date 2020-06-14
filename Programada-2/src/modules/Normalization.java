@@ -71,11 +71,8 @@ public class Normalization {
       Iterator iter=allWords.iterator();
       while(iter.hasNext()){
           result+=iter.next().toString()+" ";
-          // System.out.println(iter.next().toString());
       }
-      
       return result;
-
     }
 
     public String cleanString(final String line) {
@@ -91,130 +88,80 @@ public class Normalization {
       return cleanText;
     }
 
-  //   public void readText() throws IOException {
-  //     // readTitle();
-  //     // readA();
-  //     // readH();
-  //     readBody();
-  //   }
+    public void readText() throws IOException {
+      readTitle();
+      // readA();
+      // readH();
+      // readBody();
+    }
 
-  //   public void readTitle() throws IOException {
-  //     String text="";
+
+
+    public void readLabel(String label, ArrayList<String> toIndex) throws IOException{
+      String text="";
         
-  //       final URL pathp2 = new URL();
-  //         // load file
-  //         final File inputFile = new File(pathp2.pathp2);
-  //       // parse file as HTML document
-  //       final Document doc = Jsoup.parse(inputFile, "UTF-8");
-  //       // select element by <title>
-  //       final Elements elements = doc.select("title");
-  //       final Iterator iter = elements.iterator();
-  //       while (iter.hasNext()){
-  //             final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-  //             text+=Word+" ";
-  //       }
-  //       // final List<String> text1 = eliminateStopWords(text);
-  //       final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-  //       final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
+      final URL path = new URL();
+        // load file
+        final File inputFile = new File(path.pathp2);
+      // parse file as HTML document
+      final Document doc = Jsoup.parse(inputFile, "UTF-8");
+      // select element by <title>
+      final Elements elements = doc.select(label);
+      final Iterator iter = elements.iterator();
+      while (iter.hasNext()){
+            final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
+            text+=Word+" ";
+      }
+      String text1 = eliminateStopWords(text);
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      Matcher matcher = pattern.matcher(text1);
+      while (matcher.find()) {
+        toIndex.add(matcher.group(0));
+      }
+      toIndex.forEach(System.out::println);
+    }
 
-  //       final Iterator iter1 = text1.iterator();
-  //       while (iter1.hasNext()){
-  //         final Matcher m = r.matcher(iter1.next().toString());
-  //         while (m.find()) {
-  //           toIndexTitle.add(m.group(0));
-  //           }
-  //       }
-  //       toIndexTitle.forEach(System.out::println);
-  //   }
+    public void readTitle() throws IOException {
+       readLabel("title", toIndexTitle);
+    }
 
-  //   public void readA() throws IOException {
-  //     String text="";
+    public void readA() throws IOException {
+      readLabel("a", toIndexA);
+    }
+
+    public void readBody() throws IOException {
+      readLabel("body", toIndexBody);
+    }
+
+
+    public void readH() throws IOException {
+        String text="";
         
-  //       final URL pathp2 = new URL();
-  //         // load file
-  //         final File inputFile = new File(pathp2.pathp2);
-  //       // parse file as HTML document
-  //       final Document doc = Jsoup.parse(inputFile, "UTF-8");
-  //       // select element by <a>
-  //       final Elements elements = doc.select("a");
-  //       final Iterator iter = elements.iterator();
-  //       while (iter.hasNext()){
-  //             final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-  //             text+=Word+" ";
-  //       }
-  //       // final List<String> text1 = eliminateStopWords(text);
-  //       final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-  //       final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
+        final URL pathp2 = new URL();
+        // load file
+        final File inputFile = new File(pathp2.pathp2);
+        // parse file as HTML document
+        final Document doc = Jsoup.parse(inputFile, "UTF-8");
+        for(int i=1; i<=5; i++){
+            String h="h"+i;
+            // select element by <h?>
+            final Elements elements = doc.select(h);
+            final Iterator iter = elements.iterator();
+            while (iter.hasNext()){
+                  final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
+                  text+=Word+" ";
+            }
+            String text1 = eliminateStopWords(text);
+            final String regex = "\\s?([A-Za-z]{2,})\\s?";
+            final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+            Matcher matcher = pattern.matcher(text1);
+            while (matcher.find()) {
+              toIndexH.add(matcher.group(0));
+            }
+        }
+        toIndexH.forEach(System.out::println);
+    }
 
-  //       final Iterator iter1 = text1.iterator();
-  //       while (iter1.hasNext()){
-  //         final Matcher m = r.matcher(iter1.next().toString());
-  //         while (m.find()) {
-  //           toIndexA.add(m.group(0));
-  //           }
-  //       }
-  //       toIndexA.forEach(System.out::println);
-  //   }
-
-
-  //   public void readH() throws IOException {
-  //       String text="";
-        
-  //       final URL pathp2 = new URL();
-  //       // load file
-  //       final File inputFile = new File(pathp2.pathp2);
-  //       // parse file as HTML document
-  //       final Document doc = Jsoup.parse(inputFile, "UTF-8");
-  //       for(int i=1; i<=5; i++){
-  //           String h="h"+i;
-  //           // select element by <h?>
-  //           final Elements elements = doc.select(h);
-  //           final Iterator iter = elements.iterator();
-  //           while (iter.hasNext()){
-  //                 final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-  //                 text+=Word+" ";
-  //           }
-  //           // final List<String> text1 = eliminateStopWords(text);
-  //           final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-  //           final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
-
-  //           final Iterator iter1 = text1.iterator();
-  //           while (iter1.hasNext()){
-  //             final Matcher m = r.matcher(iter1.next().toString());
-  //             while (m.find()) {
-  //               toIndexH.add(m.group(0));
-  //               }
-  //           }
-  //       }
-  //       toIndexH.forEach(System.out::println);
-  //   }
-
-  //   public void readBody() throws IOException {
-  //     String text="";
-      
-  //     final URL pathp2 = new URL();
-  //     // load file
-  //     final File inputFile = new File(pathp2.pathp2);
-  //     // parse file as HTML document
-  //     final Document doc = Jsoup.parse(inputFile, "UTF-8");
-  //     // select element by <body>
-  //     final Elements elements = doc.select("body");
-  //     final Iterator iter = elements.iterator();
-  //     while (iter.hasNext()){
-  //           final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-  //           text+=Word+" ";
-  //     }
-  //     // final List<String> text1 = eliminateStopWords(text);
-  //     final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-  //     final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
-
-  //     final Iterator iter1 = text1.iterator();
-  //     while (iter1.hasNext()){
-  //       final Matcher m = r.matcher(iter1.next().toString());
-  //       while (m.find()) {
-  //         toIndexBody.add(m.group(0));
-  //         }
-  //     }
-  //     toIndexBody.forEach(System.out::println);
-  // }
+    
 }

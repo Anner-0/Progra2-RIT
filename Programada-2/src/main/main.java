@@ -47,25 +47,25 @@ public class main {
     public static void main(final String[] args) throws IOException {
         Normalization aux = new Normalization();
         String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
-        // aux.readText();
+        aux.readText();
 
-        System.out.println(text);
-        Analyzer analyzer = CustomAnalyzer.builder()
-        .withTokenizer("standard")
-        .addTokenFilter("lowercase")
-        .addTokenFilter("snowballPorter")
-        .build();
+        // System.out.println(text);
+        // Analyzer analyzer = CustomAnalyzer.builder()
+        // .withTokenizer("standard")
+        // .addTokenFilter("lowercase")
+        // .addTokenFilter("snowballPorter")
+        // .build();
 
-        text=aux.cleanString(text).toLowerCase();
-        System.out.println(text);
-        String lista = aux.eliminateStopWords(text);
-        // System.out.println(lista);
-        List<String> result = analyze(lista, analyzer);
+        // text=aux.cleanString(text).toLowerCase();
+        // System.out.println(text);
+        // String lista = aux.eliminateStopWords(text);
+        // // System.out.println(lista);
+        // List<String> result = analyze(lista, analyzer);
 
-        Iterator iter= result.iterator();
-        while(iter.hasNext()){
-            System.out.println(iter.next());
-        }
+        // Iterator iter= result.iterator();
+        // while(iter.hasNext()){
+        //     System.out.println(iter.next());
+        // }
 
 
     }
