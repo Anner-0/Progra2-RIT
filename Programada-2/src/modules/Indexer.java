@@ -11,6 +11,7 @@ import org.apache.lucene.document.TextField;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -27,6 +28,7 @@ import org.apache.lucene.store.FSDirectory;
  */
 public class Indexer {
     URL url;
+    List<Document> documents= new ArrayList<>();
     
     public Indexer(){// el constructor de la clase
         this.url=new URL();
@@ -34,11 +36,11 @@ public class Indexer {
 
     
 
-    public Document documentCreator(String URL,String data) {// this method set documents that will be stored on the index
+    public void documentCreator(String label,String data) {// this method set documents that will be stored on the index
         final Document document = new Document();
-        document.add(new TextField("LABEL",URL,Field.Store.YES));
+        document.add(new TextField("LABEL",label,Field.Store.YES));
         document.add(new TextField("DATA",data,Field.Store.YES));
-        return document;
+        this.documents.add(document);
     }   
 
     private IndexWriter createWriter() throws IOException {// this method creates the program that will store the documents and create the index
@@ -49,11 +51,10 @@ public class Indexer {
     }
 
 
-    public void createIndex(int indexNumber,List<Document> documents) throws Exception {
+    public void createIndex() throws Exception {
         IndexWriter writer = this.createWriter();
-
         writer.deleteAll();
-        writer.addDocuments(documents);
+        writer.addDocuments(this.documents);
         writer.commit();
         writer.close();
     }
