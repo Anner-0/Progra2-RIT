@@ -22,6 +22,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.Normalizer;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.tartarus.snowball.ext.PorterStemmer;
+import org.tartarus.snowball.ext.SpanishStemmer;
+
 
    
 public class Normalization {
@@ -90,10 +99,22 @@ public class Normalization {
       return cleanText;
     }
 
+    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
+      List<String> result = new ArrayList<String>();
+      TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
+      tokenStream= new SnowballFilter(tokenStream,"Spanish");
+      CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
+      tokenStream.reset();
+      while (tokenStream.incrementToken()) {
+          result.add(attr.toString());
+      }
+      return result;
+  }
+
     public void readText(String path) throws IOException {
-      readTitle(path);
-      readA(path);
-      readH(path);
+      // readTitle(path);
+      // readA(path);
+      // readH(path);
       readBody(path);
     }
 
@@ -132,9 +153,38 @@ public class Normalization {
     }
 
     public void readBody(String path) throws IOException {
-      readLabel("body", toIndexBody, path);
-    }
+      String text="";
+        
+        // load file
+      final File inputFile = new File(path);
+      // parse file as HTML document
+      final Document doc = Jsoup.parse(inputFile, "UTF-8");
+      // select element by <title>
+      final Elements elements = doc.select("body");
+      final Iterator iter = elements.iterator();
+      while (iter.hasNext()){
+            final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
+            text+=Word+" ";
+      }
+      String text1 = eliminateStopWords(text);
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      text="";
+      Matcher matcher = pattern.matcher(text1);
+      while (matcher.find()) {
+        // toIndexBody.add(matcher.group(0));
+        text+=matcher.group(0);
+      }
+        Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
+        List<String> result = analyze(text, analyzer);
+        Iterator iter1= result.iterator();
+        while(iter1.hasNext()){
+          toIndexBody.add((String) iter1.next());
+        }
 
+      // toIndexBody.forEach(System.out::println);
+      // System.out.println("hola");
+    }
 
     public void readH(String path) throws IOException {
         String text="";
@@ -157,15 +207,21 @@ public class Normalization {
             final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
             Matcher matcher = pattern.matcher(text1);
             while (matcher.find()) {
-              toIndexH.add(matcher.group(0));
+              text+=matcher.group(0);
+            }
+            Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
+            List<String> result = analyze(text, analyzer);
+            Iterator iter1= result.iterator();
+            while(iter1.hasNext()){
+              toIndexH.add((String) iter1.next());
             }
         }
         toIndexH.forEach(System.out::println);
     }
 
-    public void startIndization() throws IOException {
+    public void startIndization(String path) throws IOException {
       final URL pathp2 = new URL();
-      final File inputFile = new File(pathp2.pathp2);
+      final File inputFile = new File(path);
       FileReader  fr = new FileReader (inputFile);
       BufferedReader  br1 = new BufferedReader(fr);
 
@@ -177,24 +233,41 @@ public class Normalization {
           texto+=linea+"\n";
       }
       
-      String regex = "<!DOCTYPE html PUBLIC \"-\\/\\/W3C\\/\\/DTD XHTML 1.0 Transitional\\/\\/EN\" \"http:\\/\\/www.w3.org\\/TR\\/xhtml1\\/DTD\\/xhtml1-transitional.dtd\">\\n<.*>((.*|\\n)*?)<\\/html>";
+      String regex = "<.*>\\n<.*>((.*|\\n)*?)<\\/html>";
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       Matcher matcher = pattern.matcher(texto);
-      int con=1;
-      while (matcher.find() && con<=1) {
-        con++;
+      int con=0;
+      while (matcher.find() && con<=5) {
+        // con++;
+        // readBody(path);
 
-        File f = File.createTempFile("archivoTemporal_",".lwp");
-        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+        File file = new File("C:/Users/admin/Desktop/filename"+con+".html");
+        file.createNewFile();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         bw.write(matcher.group(0));
         bw.close();
-        readText(f.getAbsolutePath());
-        f.delete();
+        readText(file.getAbsolutePath());
+        file.delete();
 
-        System.out.println();
-        System.out.println("aquí inicia la otra");
-        System.out.println();
+        // System.out.println();
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
       }
+      
+        System.out.println("||||||");
     }
 
     
