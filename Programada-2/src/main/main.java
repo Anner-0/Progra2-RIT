@@ -5,21 +5,12 @@
  */
 package main;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.snowball.SnowballFilter;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.tartarus.snowball.ext.PorterStemmer;
-import org.tartarus.snowball.ext.SpanishStemmer;
+import java.io.IOException;
 
 import modules.Normalization;
+import modules.Searcher;
+import modules.URL;
 
 /**
  *
@@ -44,30 +35,17 @@ public class main {
         return result;
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws Exception {
         Normalization aux = new Normalization();
-        String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
-        aux.readText();
-
-        // System.out.println(text);
-        // Analyzer analyzer = CustomAnalyzer.builder()
-        // .withTokenizer("standard")
-        // .addTokenFilter("lowercase")
-        // .addTokenFilter("snowballPorter")
-        // .build();
-
-        // text=aux.cleanString(text).toLowerCase();
-        // System.out.println(text);
-        // String lista = aux.eliminateStopWords(text);
-        // // System.out.println(lista);
-        // List<String> result = analyze(lista, analyzer);
-
-        // Iterator iter= result.iterator();
-        // while(iter.hasNext()){
-        //     System.out.println(iter.next());
-        // }
-
-
+        Searcher searcher= new Searcher();
+        URL path = new URL();
+        String pathDirp1 = path.pathp1;
+        String pathDirp2 = path.pathp2;
+        String pathDirg1 = path.pathg1;
+        String pathDirg2 = path.pathg2;
+        aux.startIndization(pathDirp2);
+        aux.indexer.createIndex(1);
+        searcher.searchByFirstName(firstName, searcher)
     }
 
 }

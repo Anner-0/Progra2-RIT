@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -36,16 +37,34 @@ public class Indexer {
 
     
 
-    public void documentCreator(String label,String data) {// this method set documents that will be stored on the index
-        final Document document = new Document();
-        document.add(new TextField("LABEL",label,Field.Store.YES));
+    public void createDocument(String labelName,String data) {// this method set documents that will be stored on the index
+        final Document document = new Document();// crea el documento
+        document.add(new TextField("LABEL",labelName,Field.Store.YES));// crea los bloques que va a tener el documento
         document.add(new TextField("DATA",data,Field.Store.YES));
         this.documents.add(document);
     }   
 
-    private IndexWriter createWriter() throws IOException {// this method creates the program that will store the documents and create the index
-    FSDirectory dir = FSDirectory.open(Paths.get(url.url));
-    IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+    
+    public IndexWriter selectIndexWriter(int num) throws IOException {
+        if(num==0){ // num 0 es indice P1
+            return createWriter(this.url.indexp1);
+        }
+        if(num==1){// num 1 es indice P2
+            return createWriter(this.url.indexp2);
+        }
+        if(num==2){//num 2 es indice G1
+            return createWriter(this.url.indexg1);
+        }
+        if(num==3){// num 3 es indice G2
+            return createWriter(this.url.indexg2);
+        }
+        return null;
+    }
+
+    private IndexWriter createWriter(String pUrl) throws IOException {// this method creates the program that will store the documents and create the index
+    FSDirectory dir = FSDirectory.open(Paths.get(pUrl));
+    Analyzer analyzer = new SpanishAnalyzer();
+    IndexWriterConfig config = new IndexWriterConfig(analyzer);
     IndexWriter writer = new IndexWriter(dir, config);
     return writer;
     }
@@ -57,6 +76,7 @@ public class Indexer {
         writer.addDocuments(this.documents);
         writer.commit();
         writer.close();
+        System.out.println("Index Created With: "+documents.size()+" documents");
     }
     
 
