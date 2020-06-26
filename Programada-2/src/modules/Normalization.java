@@ -27,9 +27,12 @@ public class Normalization {
   ArrayList<String> toIndexA= new ArrayList<String>();
   ArrayList<String> toIndexH= new ArrayList<String>();
   ArrayList<String> toIndexBody= new ArrayList<String>();
+  public URL url;
+  public  Indexer indexer;
 
     public Normalization(){
-
+      this.url=new URL();
+      this.indexer=new Indexer();
     }
 
 
@@ -92,69 +95,81 @@ public class Normalization {
       readBody();
     }
 
-    public void readTitle() throws IOException {
-      String text="";
-        
-        final URL pathp2 = new URL();
-          // load file
-          final File inputFile = new File(pathp2.pathp2);
-        // parse file as HTML document
-        final Document doc = Jsoup.parse(inputFile, "UTF-8");
-        // select element by <title>
-        final Elements elements = doc.select("title");
-        final Iterator iter = elements.iterator();
-        while (iter.hasNext()){
-              final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-              text+=Word+" ";
-        }
-        final List<String> text1 = eliminateStopWords(text);
-        final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-        final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
 
-        final Iterator iter1 = text1.iterator();
-        while (iter1.hasNext()){
-          final Matcher m = r.matcher(iter1.next().toString());
-          while (m.find()) {
-            toIndexTitle.add(m.group(0));
-            }
-        }
-        toIndexTitle.forEach(System.out::println);
-    }
 
-    public void readA() throws IOException {
-      String text="";
-        
-        final URL pathp2 = new URL();
-          // load file
-          final File inputFile = new File(pathp2.pathp2);
-        // parse file as HTML document
-        final Document doc = Jsoup.parse(inputFile, "UTF-8");
-        // select element by <a>
-        final Elements elements = doc.select("a");
-        final Iterator iter = elements.iterator();
-        while (iter.hasNext()){
-              final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-              text+=Word+" ";
-        }
-        final List<String> text1 = eliminateStopWords(text);
-        final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-        final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
-
-        final Iterator iter1 = text1.iterator();
-        while (iter1.hasNext()){
-          final Matcher m = r.matcher(iter1.next().toString());
-          while (m.find()) {
-            toIndexA.add(m.group(0));
-            }
-        }
-        toIndexA.forEach(System.out::println);
+    public void readLabel(String label, ArrayList<String> toIndex, String path) throws IOException{
+      String text="";      
+        // load file
+      final File inputFile = new File(path);
+      // parse file as HTML document
+      final Document doc = Jsoup.parse(inputFile, "UTF-8");
+      // select element by <title>
+      final Elements elements = doc.select(label);
+      final Iterator iter = elements.iterator();
+      while (iter.hasNext()){
+            final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
+            text+=Word+" ";
+      }
+      String text1 = eliminateStopWords(text);
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      Matcher matcher = pattern.matcher(text1);
+      while (matcher.find()) {
+        toIndex.add(matcher.group(0));
+      }
+      toIndex.forEach(System.out::println);
     }
 
 
-    public void readH() throws IOException {
+    public void readTitle(String path) throws IOException {
+       readLabel("title", toIndexTitle, path);
+    }
+
+
+    public void readA(String path) throws IOException {
+      readLabel("a", toIndexA, path);
+    }
+
+
+    public void readBody(String path) throws IOException {
+      String text="";   
+        // load file
+      final File inputFile = new File(path);
+      // parse file as HTML document
+      final Document doc = Jsoup.parse(inputFile, "UTF-8");
+      // select element by <title>
+      final Elements elements = doc.select("body");
+      final Iterator iter = elements.iterator();
+      while (iter.hasNext()){
+            final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
+            text+=Word+" ";
+      }
+      String text1 = eliminateStopWords(text);
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      text="";
+      Matcher matcher = pattern.matcher(text1);
+      while (matcher.find()) {
+        // toIndexBody.add(matcher.group(0));
+        text+=matcher.group(0);
+      }
+        Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
+        List<String> result = analyze(text, analyzer);
+        Iterator iter1= result.iterator();
+        String finalText=new String();
+        while(iter1.hasNext()){
+          finalText+=iter1.next();
+          finalText+=" ";
+        }
+        this.indexer.documentCreator("body", finalText);
+
+          // toIndexBody.forEach(System.out::println);
+      // System.out.println("hola");
+    }
+
+
+    public void readH(String path) throws IOException {
         String text="";
-        
-        final URL pathp2 = new URL();
         // load file
         final File inputFile = new File(pathp2.pathp2);
         // parse file as HTML document
@@ -187,27 +202,45 @@ public class Normalization {
       String text="";
       
       final URL pathp2 = new URL();
-      // load file
-      final File inputFile = new File(pathp2.pathp2);
-      // parse file as HTML document
-      final Document doc = Jsoup.parse(inputFile, "UTF-8");
-      // select element by <body>
-      final Elements elements = doc.select("body");
-      final Iterator iter = elements.iterator();
-      while (iter.hasNext()){
-            final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
-            text+=Word+" ";
-      }
-      final List<String> text1 = eliminateStopWords(text);
-      final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-      final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
-
-      final Iterator iter1 = text1.iterator();
-      while (iter1.hasNext()){
-        final Matcher m = r.matcher(iter1.next().toString());
-        while (m.find()) {
-          toIndexBody.add(m.group(0));
-          }
+      final File inputFile = new File(path);
+      FileReader  fr = new FileReader (inputFile);
+      BufferedReader  br1 = new BufferedReader(fr);
+      String texto="";
+      // Lectura del fichero
+      String linea;
+      while((linea=br1.readLine())!=null){
+          texto+=linea;
+      }     
+      String regex = "(.*?)<\\/html>";
+      Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      Matcher matcher = pattern.matcher(texto);
+      int con=0;
+      while (matcher.find() ) {
+         con++;
+        // readBody(path);
+        File file = new File(this.url.temp+con+".html");
+        file.createNewFile();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        bw.write(matcher.group(0));
+        bw.close();
+        readText(file.getAbsolutePath());
+        //file.delete();
+        // System.out.println();
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
+        // System.out.println("||||||");
       }
       toIndexBody.forEach(System.out::println);
   }
