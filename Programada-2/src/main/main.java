@@ -41,10 +41,12 @@ public class main {
 
     public static void main(final String[] args) throws IOException {
         Normalization aux = new Normalization();
-        String text = "Los cuentos clásicos son parte de nuestra cultura, ya que enseñan lecciones y consejos a los más pequeños desde hace siglos. Es por ello que Mundo Primaria te trae una selección de los mejores cuentos clásicos, para que tanto tú como tu hijo o hija disfrutéis de estos relatos que contienen una sabiduría tan importante que se ha seguido transmitiendo con el paso de los años";
         URL path = new URL();
-        String pathDir = path.pathp2;
-        aux.startIndization(pathDir);
+        String pathDirp1 = path.pathp1;
+        String pathDirp2 = path.pathp2;
+        String pathDirg1 = path.pathg1;
+        String pathDirg2 = path.pathg2;
+        aux.startIndization(pathDirp2);
     }
 
 }

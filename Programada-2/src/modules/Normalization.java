@@ -112,10 +112,10 @@ public class Normalization {
   }
 
     public void readText(String path) throws IOException {
-      // readTitle(path);
+      readTitle(path);
       // readA(path);
       // readH(path);
-      readBody(path);
+      // readBody(path);
     }
 
 
@@ -123,7 +123,7 @@ public class Normalization {
     public void readLabel(String label, ArrayList<String> toIndex, String path) throws IOException{
       String text="";
         
-        // load file
+      // load file
       final File inputFile = new File(path);
       // parse file as HTML document
       final Document doc = Jsoup.parse(inputFile, "UTF-8");
@@ -141,7 +141,7 @@ public class Normalization {
       while (matcher.find()) {
         toIndex.add(matcher.group(0));
       }
-      toIndex.forEach(System.out::println);
+      // toIndex.forEach(System.out::println);
     }
 
     public void readTitle(String path) throws IOException {
@@ -172,7 +172,6 @@ public class Normalization {
       text="";
       Matcher matcher = pattern.matcher(text1);
       while (matcher.find()) {
-        // toIndexBody.add(matcher.group(0));
         text+=matcher.group(0);
       }
         Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
@@ -183,7 +182,6 @@ public class Normalization {
         }
 
       // toIndexBody.forEach(System.out::println);
-      // System.out.println("hola");
     }
 
     public void readH(String path) throws IOException {
@@ -219,56 +217,49 @@ public class Normalization {
         toIndexH.forEach(System.out::println);
     }
 
+    public void createTempFile(String text) throws IOException {
+      final URL path = new URL();
+      File file = new File(path.temp);
+      file.createNewFile();
+      BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+      bw.write(text);
+      bw.close();
+      readText(file.getAbsolutePath());
+      
+      file.delete();
+
+    }
+
     public void startIndization(String path) throws IOException {
-      final URL pathp2 = new URL();
       final File inputFile = new File(path);
       FileReader  fr = new FileReader (inputFile);
       BufferedReader  br1 = new BufferedReader(fr);
 
-      String texto="";
+      String text="";
 
       // Lectura del fichero
-      String linea;
-      while((linea=br1.readLine())!=null){
-          texto+=linea+"\n";
-      }
-      
-      String regex = "<.*>\\n<.*>((.*|\\n)*?)<\\/html>";
-      Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-      Matcher matcher = pattern.matcher(texto);
+      String line;
+      int i=1000000;
       int con=0;
-      while (matcher.find() && con<=5) {
-        // con++;
-        // readBody(path);
+      String regex = ".*<\\/html>";
+      // String regex = "<\\/html>";
+      Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      while((line=br1.readLine())!=null){
+        Matcher matcher = pattern.matcher(line);
+        if(matcher.find() && con<=i){
+          // if(line==("\\/html")){
+          con++;
+          createTempFile(text);
 
-        File file = new File("C:/Users/admin/Desktop/filename"+con+".html");
-        file.createNewFile();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(matcher.group(0));
-        bw.close();
-        readText(file.getAbsolutePath());
-        file.delete();
-
-        // System.out.println();
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
+          // System.out.println(text);
+          System.out.println("Aquí termina"+"->"+con+" ");
+        }else{
+          text+=line;
+        }
       }
-      
-        System.out.println("||||||");
-    }
+
+      }
+      //   System.out.println("||||||");
 
     
 }
