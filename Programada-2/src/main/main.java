@@ -5,26 +5,10 @@
  */
 package main;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.custom.CustomAnalyzer;
-import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.snowball.SnowballFilter;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.tartarus.snowball.ext.PorterStemmer;
-import org.tartarus.snowball.ext.SpanishStemmer;
 
 import modules.Normalization;
+import modules.Searcher;
 import modules.URL;
 
 /**
@@ -39,14 +23,17 @@ public class main {
      */
 
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws Exception {
         Normalization aux = new Normalization();
+        Searcher searcher= new Searcher();
         URL path = new URL();
         String pathDirp1 = path.pathp1;
         String pathDirp2 = path.pathp2;
         String pathDirg1 = path.pathg1;
         String pathDirg2 = path.pathg2;
         aux.startIndization(pathDirp2);
+        aux.indexer.createIndex(1);
+        searcher.searchByFirstName("Hola");
     }
 
 }
