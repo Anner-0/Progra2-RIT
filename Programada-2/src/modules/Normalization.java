@@ -88,17 +88,17 @@ public class Normalization {
       return cleanText;
     }
 
-    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
-      List<String> result = new ArrayList<String>();
-      TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
-      tokenStream= new SnowballFilter(tokenStream,"Spanish");
-      CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
-      tokenStream.reset();
-      while (tokenStream.incrementToken()) {
-          result.add(attr.toString());
-      }
-      return result;
-  }
+  //   public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
+  //     List<String> result = new ArrayList<String>();
+  //     TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
+  //     tokenStream= new SnowballFilter(tokenStream,"Spanish");
+  //     CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
+  //     tokenStream.reset();
+  //     while (tokenStream.incrementToken()) {
+  //         result.add(attr.toString());
+  //     }
+  //     return result;
+  // }
 
     public void readText(String path) throws IOException {
       //readTitle(path);
@@ -164,8 +164,8 @@ public class Normalization {
       while (matcher.find()) {
         text+=matcher.group(0);
       }
-        Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
-        List<String> result = analyze(text, analyzer);
+        // Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
+        // List<String> result = analyze(text, analyzer);
         
         Iterator iter1= result.iterator();
         String finalString=new String();
@@ -173,7 +173,7 @@ public class Normalization {
           finalString+=(String) iter1.next()+" ";
         }
         System.out.println(finalString);
-        this.indexer.createDocument("body",finalString);
+        // this.indexer.createDocument("body",finalString);
     }
 
 
@@ -209,9 +209,9 @@ public class Normalization {
       final URL path = new URL();
       File file = new File(path.temp);
       file.createNewFile();
-      BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-      bw.write(text);
-      bw.close();
+      // BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+      // bw.write(text);
+      // bw.close();
       readText(file.getAbsolutePath());
       file.delete();
 

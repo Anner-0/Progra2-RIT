@@ -80,8 +80,8 @@ public class Searcher {
 
     
 
-    public void visualizeTopDocs(TopDocs top,String label) throws IOException {// este metodo pretende imprimir en consola el label de los documetos que se recuperaron
-        for (ScoreDoc sd : top.scoreDocs) 
+    // public void visualizeTopDocs(TopDocs top,String label) throws IOException {// este metodo pretende imprimir en consola el label de los documetos que se recuperaron
+    //     for (ScoreDoc sd : top.scoreDocs) 
         {
             Document d = this.searcher.doc(sd.doc);
             System.out.println(String.format(d.get(label);

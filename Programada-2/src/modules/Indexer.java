@@ -70,8 +70,8 @@ public class Indexer {
     }
 
 
-    public void createIndex() throws Exception {
-        IndexWriter writer = this.createWriter();
+    public void createIndex(int num) throws Exception {
+        IndexWriter writer = this.selectIndexWriter(num);
         writer.deleteAll();
         writer.addDocuments(this.documents);
         writer.commit();

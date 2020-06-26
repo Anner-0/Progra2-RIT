@@ -23,17 +23,6 @@ public class main {
      * @throws IOException
      */
 
-    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
-        List<String> result = new ArrayList<String>();
-        TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
-        tokenStream= new SnowballFilter(tokenStream,"Spanish");
-        CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
-        tokenStream.reset();
-        while (tokenStream.incrementToken()) {
-            result.add(attr.toString());
-        }
-        return result;
-    }
 
     public static void main(final String[] args) throws Exception {
         Normalization aux = new Normalization();
@@ -45,7 +34,7 @@ public class main {
         String pathDirg2 = path.pathg2;
         aux.startIndization(pathDirp2);
         aux.indexer.createIndex(1);
-        searcher.searchByFirstName(firstName, searcher)
+        searcher.searchByFirstName("Hola");
     }
 
 }
