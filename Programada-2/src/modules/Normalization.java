@@ -124,7 +124,7 @@ public class Normalization {
       final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       Matcher matcher = pattern.matcher(text);
       while (matcher.find()) {
-        toIndex+=(String)matcher.group(0);
+        toIndex+=(String)matcher.group(0)+" ";
       }
       return toIndex;
     }
@@ -135,7 +135,7 @@ public class Normalization {
       String text1="";
       Matcher matcher = pattern.matcher(text);
       while (matcher.find()) {
-        text1+=matcher.group(0);
+        text1+=(String)matcher.group(0)+" ";
       }
       return text1;
     }
@@ -186,7 +186,8 @@ public class Normalization {
       text="";
       text=getPatternToAnalize(text1);
       // String result = analyze(text);
-      toIndexBody=result;
+      toIndexBody=text;
+      System.out.println(toIndexBody);
     }
 
     public void readH(String path) throws IOException {
@@ -243,7 +244,7 @@ public class Normalization {
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
-        if(matcher.find() && con<=i){
+        if(matcher.find() && con<=6){
           con++;
           createTempFile(text);
           System.out.println("Aquí termina"+"->"+con+" ");
