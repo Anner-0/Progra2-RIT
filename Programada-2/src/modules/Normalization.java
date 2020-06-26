@@ -16,9 +16,20 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.Normalizer;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.tartarus.snowball.ext.PorterStemmer;
+import org.tartarus.snowball.ext.SpanishStemmer;
 
 
    
@@ -63,16 +74,19 @@ public class Normalization {
 
     }
 
-    public List<String> eliminateStopWords(final String data) {
+    public String eliminateStopWords(final String data) {
       final List<String> stopWords = createListStopWords();
       final List<String> allWords = new ArrayList<>();
+      String result="";
       for (final String word : data.split(" ")) {
         allWords.add(word);
       }
       allWords.removeAll(stopWords);
-
-      return allWords;
-
+      Iterator iter=allWords.iterator();
+      while(iter.hasNext()){
+          result+=iter.next().toString()+" ";
+      }
+      return result;
     }
 
     public String cleanString(final String line) {
@@ -88,18 +102,31 @@ public class Normalization {
       return cleanText;
     }
 
-    public void readText() throws IOException {
-      // readTitle();
-      // readA();
-      // readH();
-      readBody();
+    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
+      List<String> result = new ArrayList<String>();
+      TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
+      tokenStream= new SnowballFilter(tokenStream,"Spanish");
+      CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
+      tokenStream.reset();
+      while (tokenStream.incrementToken()) {
+          result.add(attr.toString());
+      }
+      return result;
+  }
+
+    public void readText(String path) throws IOException {
+      readTitle(path);
+      // readA(path);
+      // readH(path);
+      // readBody(path);
     }
 
 
 
     public void readLabel(String label, ArrayList<String> toIndex, String path) throws IOException{
-      String text="";      
-        // load file
+      String text="";
+        
+      // load file
       final File inputFile = new File(path);
       // parse file as HTML document
       final Document doc = Jsoup.parse(inputFile, "UTF-8");
@@ -117,22 +144,20 @@ public class Normalization {
       while (matcher.find()) {
         toIndex.add(matcher.group(0));
       }
-      toIndex.forEach(System.out::println);
+      // toIndex.forEach(System.out::println);
     }
-
 
     public void readTitle(String path) throws IOException {
        readLabel("title", toIndexTitle, path);
     }
 
-
     public void readA(String path) throws IOException {
       readLabel("a", toIndexA, path);
     }
 
-
     public void readBody(String path) throws IOException {
-      String text="";   
+      String text="";
+        
         // load file
       final File inputFile = new File(path);
       // parse file as HTML document
@@ -150,28 +175,23 @@ public class Normalization {
       text="";
       Matcher matcher = pattern.matcher(text1);
       while (matcher.find()) {
-        // toIndexBody.add(matcher.group(0));
         text+=matcher.group(0);
       }
         Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
         List<String> result = analyze(text, analyzer);
         Iterator iter1= result.iterator();
-        String finalText=new String();
         while(iter1.hasNext()){
-          finalText+=iter1.next();
-          finalText+=" ";
+          toIndexBody.add((String) iter1.next());
         }
-        this.indexer.documentCreator("body", finalText);
 
-          // toIndexBody.forEach(System.out::println);
-      // System.out.println("hola");
+      // toIndexBody.forEach(System.out::println);
     }
-
 
     public void readH(String path) throws IOException {
         String text="";
+        
         // load file
-        final File inputFile = new File(pathp2.pathp2);
+        final File inputFile = new File(path);
         // parse file as HTML document
         final Document doc = Jsoup.parse(inputFile, "UTF-8");
         for(int i=1; i<=5; i++){
@@ -183,65 +203,66 @@ public class Normalization {
                   final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
                   text+=Word+" ";
             }
-            final List<String> text1 = eliminateStopWords(text);
-            final String pattern = "\\s?([A-Za-z]{2,})\\s?";
-            final Pattern r = Pattern.compile(pattern, Pattern.MULTILINE);
-
-            final Iterator iter1 = text1.iterator();
-            while (iter1.hasNext()){
-              final Matcher m = r.matcher(iter1.next().toString());
-              while (m.find()) {
-                toIndexH.add(m.group(0));
-                }
+            String text1 = eliminateStopWords(text);
+            final String regex = "\\s?([A-Za-z]{2,})\\s?";
+            final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+            Matcher matcher = pattern.matcher(text1);
+            while (matcher.find()) {
+              text+=matcher.group(0);
+            }
+            Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
+            List<String> result = analyze(text, analyzer);
+            Iterator iter1= result.iterator();
+            while(iter1.hasNext()){
+              toIndexH.add((String) iter1.next());
             }
         }
         toIndexH.forEach(System.out::println);
     }
 
-    public void readBody() throws IOException {
-      String text="";
+    public void createTempFile(String text) throws IOException {
+      final URL path = new URL();
+      File file = new File(path.temp);
+      file.createNewFile();
+      BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+      bw.write(text);
+      bw.close();
+      readText(file.getAbsolutePath());
       
-      final URL pathp2 = new URL();
+      file.delete();
+
+    }
+
+    public void startIndization(String path) throws IOException {
       final File inputFile = new File(path);
       FileReader  fr = new FileReader (inputFile);
       BufferedReader  br1 = new BufferedReader(fr);
-      String texto="";
+
+      String text="";
+
       // Lectura del fichero
-      String linea;
-      while((linea=br1.readLine())!=null){
-          texto+=linea;
-      }     
-      String regex = "(.*?)<\\/html>";
-      Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-      Matcher matcher = pattern.matcher(texto);
+      String line;
+      int i=1000000;
       int con=0;
-      while (matcher.find() ) {
-         con++;
-        // readBody(path);
-        File file = new File(this.url.temp+con+".html");
-        file.createNewFile();
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(matcher.group(0));
-        bw.close();
-        readText(file.getAbsolutePath());
-        //file.delete();
-        // System.out.println();
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
-        // System.out.println("||||||");
+      String regex = ".*<\\/html>";
+      // String regex = "<\\/html>";
+      Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      while((line=br1.readLine())!=null){
+        Matcher matcher = pattern.matcher(line);
+        if(matcher.find() && con<=i){
+          // if(line==("\\/html")){
+          con++;
+          createTempFile(text);
+
+          // System.out.println(text);
+          System.out.println("Aquí termina"+"->"+con+" ");
+        }else{
+          text+=line;
+        }
       }
-      toIndexBody.forEach(System.out::println);
-  }
+
+      }
+      //   System.out.println("||||||");
+
+    
 }
