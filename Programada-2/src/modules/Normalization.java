@@ -34,12 +34,12 @@ import org.tartarus.snowball.ext.SpanishStemmer;
 
    
 public class Normalization {
-  ArrayList<String> toIndexTitle = new ArrayList<String>();
-  ArrayList<String> toIndexA= new ArrayList<String>();
-  ArrayList<String> toIndexH= new ArrayList<String>();
-  ArrayList<String> toIndexBody= new ArrayList<String>();
-
-    public Normalization(){
+  String toIndexTitle = new String();
+  String toIndexA= new String();
+  String toIndexH= new String();
+  String toIndexBody= new String();
+  
+    public Normalization() throws IOException {
 
     }
 
@@ -99,28 +99,50 @@ public class Normalization {
       return cleanText;
     }
 
-    public static List<String> analyze(String text, Analyzer analyzer) throws IOException {
-      List<String> result = new ArrayList<String>();
+    public static String analyze(String text) throws IOException {
+      String result = new String();
+      Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
       TokenStream tokenStream = analyzer.tokenStream("FIELD_NAME", text);
       tokenStream= new SnowballFilter(tokenStream,"Spanish");
       CharTermAttribute attr = tokenStream.addAttribute(CharTermAttribute.class);
       tokenStream.reset();
       while (tokenStream.incrementToken()) {
-          result.add(attr.toString());
+          result+=(String)attr.toString();
       }
       return result;
   }
 
     public void readText(String path) throws IOException {
-      readTitle(path);
+      // readTitle(path);
       // readA(path);
       // readH(path);
-      // readBody(path);
+      readBody(path);
     }
 
+    public String getPattern(String text, String toIndex){
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      Matcher matcher = pattern.matcher(text);
+      while (matcher.find()) {
+        toIndex+=(String)matcher.group(0);
+      }
+      return toIndex;
+    }
 
+    public String getPatternToAnalize(String text){
+      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+      String text1="";
+      Matcher matcher = pattern.matcher(text);
+      while (matcher.find()) {
+        text1+=matcher.group(0);
+      }
+      return text1;
+    }
 
-    public void readLabel(String label, ArrayList<String> toIndex, String path) throws IOException{
+    
+
+    public void readLabel(String label, String toIndex, String path) throws IOException{
       String text="";
         
       // load file
@@ -135,13 +157,7 @@ public class Normalization {
             text+=Word+" ";
       }
       String text1 = eliminateStopWords(text);
-      final String regex = "\\s?([A-Za-z]{2,})\\s?";
-      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-      Matcher matcher = pattern.matcher(text1);
-      while (matcher.find()) {
-        toIndex.add(matcher.group(0));
-      }
-      // toIndex.forEach(System.out::println);
+      toIndex=getPattern(text1, toIndex);
     }
 
     public void readTitle(String path) throws IOException {
@@ -159,7 +175,7 @@ public class Normalization {
       final File inputFile = new File(path);
       // parse file as HTML document
       final Document doc = Jsoup.parse(inputFile, "UTF-8");
-      // select element by <title>
+      // select element by <body>
       final Elements elements = doc.select("body");
       final Iterator iter = elements.iterator();
       while (iter.hasNext()){
@@ -167,31 +183,22 @@ public class Normalization {
             text+=Word+" ";
       }
       String text1 = eliminateStopWords(text);
-      final String regex = "\\s?([A-Za-z]{2,})\\s?";
-      final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       text="";
-      Matcher matcher = pattern.matcher(text1);
-      while (matcher.find()) {
-        text+=matcher.group(0);
-      }
-        Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
-        List<String> result = analyze(text, analyzer);
-        Iterator iter1= result.iterator();
-        while(iter1.hasNext()){
-          toIndexBody.add((String) iter1.next());
-        }
-
-      // toIndexBody.forEach(System.out::println);
+      text=getPatternToAnalize(text1);
+      // String result = analyze(text);
+      toIndexBody=result;
     }
 
     public void readH(String path) throws IOException {
         String text="";
+        String result="";
         
         // load file
         final File inputFile = new File(path);
         // parse file as HTML document
         final Document doc = Jsoup.parse(inputFile, "UTF-8");
         for(int i=1; i<=5; i++){
+            result="";
             String h="h"+i;
             // select element by <h?>
             final Elements elements = doc.select(h);
@@ -201,20 +208,11 @@ public class Normalization {
                   text+=Word+" ";
             }
             String text1 = eliminateStopWords(text);
-            final String regex = "\\s?([A-Za-z]{2,})\\s?";
-            final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-            Matcher matcher = pattern.matcher(text1);
-            while (matcher.find()) {
-              text+=matcher.group(0);
-            }
-            Analyzer analyzer = CustomAnalyzer.builder().withTokenizer("standard").addTokenFilter("snowballPorter").build();
-            List<String> result = analyze(text, analyzer);
-            Iterator iter1= result.iterator();
-            while(iter1.hasNext()){
-              toIndexH.add((String) iter1.next());
-            }
+            text="";
+            // text=getPatternToAnalize(text1);
+            result = analyze(text);
         }
-        toIndexH.forEach(System.out::println);
+        toIndexH+=result;
     }
 
     public void createTempFile(String text) throws IOException {
@@ -242,16 +240,12 @@ public class Normalization {
       int i=1000000;
       int con=0;
       String regex = ".*<\\/html>";
-      // String regex = "<\\/html>";
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
         if(matcher.find() && con<=i){
-          // if(line==("\\/html")){
           con++;
           createTempFile(text);
-
-          // System.out.println(text);
           System.out.println("Aquí termina"+"->"+con+" ");
         }else{
           text+=line;
@@ -259,7 +253,6 @@ public class Normalization {
       }
 
       }
-      //   System.out.println("||||||");
 
     
 }
