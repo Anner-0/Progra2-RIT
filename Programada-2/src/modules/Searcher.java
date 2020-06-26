@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -29,11 +31,11 @@ import org.apache.lucene.store.FSDirectory;
 public class Searcher {
     
     public URL url = null;
-    public IndexSearcher indexSearcher=null;
+    public IndexSearcher indexSearcher;
     
     public Searcher(int num) throws IOException {
         this.url= new URL();
-        this.indexSearcher=this.selectIndexSearch(num);
+        this.indexSearcher=selectIndexSearch(num);
         
     }
 
@@ -64,29 +66,46 @@ public class Searcher {
     } 
 
 
-    public TopDocs searchByFirstName(String firstName) throws Exception{
+    public TopDocs search(String datatoSearch) throws Exception{
         QueryParser qp = new QueryParser("body", new SpanishAnalyzer());
-        Query firstNameQuery = qp.parse(firstName);
-        TopDocs hits = this.indexSearcher.search(firstNameQuery, 10);
+        Query query = qp.parse(datatoSearch);
+        TopDocs hits = this.indexSearcher.search(query, 3);
         System.out.println("Total Results :: " + hits.totalHits);
+        for (ScoreDoc sd : hits.scoreDocs) 
+        {
+            Document d = this.indexSearcher.doc(sd.doc);
+
+            System.out.println("------------------------------------------------------");
+            System.out.println(String.format(d.get("body")));
+        }
+        
         return hits;
     }
-    public TopDocs searchByLabel (String dataToFInd, IndexSearcher searcher) throws Exception {//Busca en el label que recibe 
-        QueryParser qp = new QueryParser("body", new SpanishAnalyzer());
-        Query idQuery = qp.parse(dataToFInd);
-        TopDocs hits = searcher.search(idQuery, 20);
-        return hits;
-    }
+    // public TopDocs searchByLabel (String dataToFInd, IndexSearcher searcher) throws Exception {//Busca en el label que recibe 
+    //     QueryParser qp = new QueryParser("body", new SpanishAnalyzer());
+    //     Query idQuery = qp.parse(dataToFInd);
+    //     TopDocs hits = searcher.search(idQuery, 20);
+
+    //     for (ScoreDoc sd : foundDocs.scoreDocs) 
+    //     {
+    //         Document d = searcher.doc(sd.doc);
+    //         System.out.println(String.format(d.get("firstName")));
+    //     }
+
+
+    //     return hits;
+    // }
+
 
     
 
     // public void visualizeTopDocs(TopDocs top,String label) throws IOException {// este metodo pretende imprimir en consola el label de los documetos que se recuperaron
     //     for (ScoreDoc sd : top.scoreDocs) 
-        {
-            Document d = this.searcher.doc(sd.doc);
-            System.out.println(String.format(d.get(label);
-        }
-    }
+    //     {
+    //         Document d = this.searcher.doc(sd.doc);
+    //         System.out.println(String.format(d.get(label);
+    //     }
+    // }
 
 
 

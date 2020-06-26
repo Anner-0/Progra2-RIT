@@ -38,8 +38,10 @@ public class Normalization {
   String toIndexA= new String();
   String toIndexH= new String();
   String toIndexBody= new String();
+  public Indexer indexer=null;
   
     public Normalization() throws IOException {
+      this.indexer=new Indexer(); 
 
     }
 
@@ -170,7 +172,6 @@ public class Normalization {
 
     public void readBody(String path) throws IOException {
       String text="";
-        
         // load file
       final File inputFile = new File(path);
       // parse file as HTML document
@@ -187,7 +188,8 @@ public class Normalization {
       text=getPatternToAnalize(text1);
       // String result = analyze(text);
       toIndexBody=text;
-      System.out.println(toIndexBody);
+      indexer.createDocument("body",toIndexBody);
+      //System.out.println(toIndexBody);
     }
 
     public void readH(String path) throws IOException {
@@ -244,7 +246,7 @@ public class Normalization {
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
-        if(matcher.find() && con<=6){
+        if(matcher.find() && con<=i){
           con++;
           createTempFile(text);
           System.out.println("Aquí termina"+"->"+con+" ");
