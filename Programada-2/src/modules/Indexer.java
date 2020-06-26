@@ -38,7 +38,7 @@ public class Indexer {
     
 
     public void createDocument(String labelName,String data) {// this method set documents that will be stored on the index
-        System.out.println(data);
+        //System.out.println(data);
         Document document = new Document();// crea el documento
         document.add(new TextField(labelName,data,Field.Store.YES));// crea los bloques que va a tener el documento
         //document.add(new TextField("DATA",data,Field.Store.YES));

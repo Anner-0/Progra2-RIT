@@ -115,9 +115,9 @@ public class Normalization {
   }
 
     public void readText(String path) throws IOException {
-      // readTitle(path);
-      // readA(path);
-      // readH(path);
+      readTitle(path);
+      readA(path);
+      readH(path);
       readBody(path);
     }
 
@@ -145,8 +145,7 @@ public class Normalization {
     
 
     public void readLabel(String label, String toIndex, String path) throws IOException{
-      String text="";
-        
+      String text="";  
       // load file
       final File inputFile = new File(path);
       // parse file as HTML document
@@ -160,6 +159,9 @@ public class Normalization {
       }
       String text1 = eliminateStopWords(text);
       toIndex=getPattern(text1, toIndex);
+      if(label=="a"){indexer.createDocument("ref",toIndex);}
+      if(label=="title"){indexer.createDocument("titulo", toIndex);}
+      
     }
 
     public void readTitle(String path) throws IOException {
@@ -188,20 +190,18 @@ public class Normalization {
       text=getPatternToAnalize(text1);
       // String result = analyze(text);
       toIndexBody=text;
-      indexer.createDocument("body",toIndexBody);
+      indexer.createDocument("texto",toIndexBody);
       //System.out.println(toIndexBody);
     }
 
     public void readH(String path) throws IOException {
         String text="";
         String result="";
-        
         // load file
         final File inputFile = new File(path);
         // parse file as HTML document
         final Document doc = Jsoup.parse(inputFile, "UTF-8");
         for(int i=1; i<=5; i++){
-            result="";
             String h="h"+i;
             // select element by <h?>
             final Elements elements = doc.select(h);
@@ -212,10 +212,11 @@ public class Normalization {
             }
             String text1 = eliminateStopWords(text);
             text="";
-            // text=getPatternToAnalize(text1);
-            result = analyze(text);
+            text=getPatternToAnalize(text1);
+            result+=text;
         }
-        toIndexH+=result;
+        toIndexH+=text;
+        indexer.createDocument("encab",text);
     }
 
     public void createTempFile(String text) throws IOException {
@@ -250,6 +251,8 @@ public class Normalization {
           con++;
           createTempFile(text);
           System.out.println("Aquí termina"+"->"+con+" ");
+          text="";
+          line="";
         }else{
           text+=line;
         }

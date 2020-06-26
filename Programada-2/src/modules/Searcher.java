@@ -32,11 +32,12 @@ public class Searcher {
     
     public URL url = null;
     public IndexSearcher indexSearcher;
+    public TopDocs lastTopSearch;
     
     public Searcher(int num) throws IOException {
         this.url= new URL();
         this.indexSearcher=selectIndexSearch(num);
-        
+        this.lastTopSearch=null; 
     }
 
 
@@ -67,45 +68,32 @@ public class Searcher {
 
 
     public TopDocs search(String datatoSearch) throws Exception{
-        QueryParser qp = new QueryParser("body", new SpanishAnalyzer());
+        QueryParser qp = new QueryParser("texto", new SpanishAnalyzer());
         Query query = qp.parse(datatoSearch);
-        TopDocs hits = this.indexSearcher.search(query, 3);
+        TopDocs hits = this.indexSearcher.search(query, 20);
         System.out.println("Total Results :: " + hits.totalHits);
-        for (ScoreDoc sd : hits.scoreDocs) 
-        {
-            Document d = this.indexSearcher.doc(sd.doc);
+        // for (ScoreDoc sd : hits.scoreDocs) 
+        // {
+        //     Document d = this.indexSearcher.doc(sd.doc);
 
-            System.out.println("------------------------------------------------------");
-            System.out.println(String.format(d.get("body")));
-        }
-        
+        //     // System.out.println("------------------------------------------------------");
+        //     // System.out.println(String.format(d.get("body")));
+        // }
+        this.lastTopSearch=hits;
         return hits;
     }
-    // public TopDocs searchByLabel (String dataToFInd, IndexSearcher searcher) throws Exception {//Busca en el label que recibe 
-    //     QueryParser qp = new QueryParser("body", new SpanishAnalyzer());
-    //     Query idQuery = qp.parse(dataToFInd);
-    //     TopDocs hits = searcher.search(idQuery, 20);
-
-    //     for (ScoreDoc sd : foundDocs.scoreDocs) 
-    //     {
-    //         Document d = searcher.doc(sd.doc);
-    //         System.out.println(String.format(d.get("firstName")));
-    //     }
-
-
-    //     return hits;
-    // }
 
 
     
 
-    // public void visualizeTopDocs(TopDocs top,String label) throws IOException {// este metodo pretende imprimir en consola el label de los documetos que se recuperaron
-    //     for (ScoreDoc sd : top.scoreDocs) 
-    //     {
-    //         Document d = this.searcher.doc(sd.doc);
-    //         System.out.println(String.format(d.get(label);
-    //     }
-    // }
+   public void visualizeTopDocs(String label) throws IOException {// este metodo pretende imprimir en consola el label de los documetos que se recuperaron
+         for (ScoreDoc sd : this.lastTopSearch.scoreDocs) 
+        {
+            Document d = this.indexSearcher.doc(sd.doc);
+             System.out.println("------------------------------------------------------"+"\n");
+            System.out.println(String.format(d.get(label)));
+        }
+    }
 
 
 
