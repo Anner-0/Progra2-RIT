@@ -30,12 +30,11 @@ public class main {
         String pathDirp2 = path.pathp2;
         String pathDirg1 = path.pathg1;
         String pathDirg2 = path.pathg2;
-        aux.startIndization(pathDirg2);
-        aux.indexer.createIndex(3);
-        // Searcher searcher= new Searcher(0);
-        // searcher.search("titulo:zetachh");
-        // searcher.visualizeTopDocs("titulo");
-        
+        aux.startIndization(pathDirg1,2);
+        aux.indexer.createIndex(2);
+         Searcher searcher= new Searcher(2);
+        searcher.search("wikipedia");
+        searcher.visualizeTopDocs("titulo"); 
     }
 
 }

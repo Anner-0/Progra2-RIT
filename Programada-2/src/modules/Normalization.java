@@ -114,12 +114,12 @@ public class Normalization {
       return result;
   }
 
-    public void readText(String path,Integer posInicial) throws IOException {
+    public void readText(String path,Integer posInicial,int numpath) throws IOException {
       readTitle(path);
       readA(path);
       readH(path);
       readBody(path);
-      this.indexer.createDocument(posInicial, this.toIndexBody,this.toIndexA,this.toIndexTitle, this.toIndexH);
+      this.indexer.createDocument(posInicial, this.toIndexBody,this.toIndexA,this.toIndexTitle, this.toIndexH,numpath);
     }
 
     public String getPattern(String text, String toIndex){
@@ -225,20 +225,26 @@ public class Normalization {
         //indexer.createDocument("encab",text);
     }
 
-    public void createTempFile(String text,Integer inicial) throws IOException {
+    public void createTempFile(String text,Integer inicial,int numpath) throws IOException {
       final URL path = new URL();
       File file = new File(path.temp);
       file.createNewFile();
       BufferedWriter bw = new BufferedWriter(new FileWriter(file));
       bw.write(text);
       bw.close();
-      readText(file.getAbsolutePath(),inicial);
+      readText(file.getAbsolutePath(),inicial,numpath);
       
       file.delete();
 
     }
 
-    public void startIndization(String path) throws IOException {
+    /**
+     * 
+     * @param path the path of the txt file
+     * @param num the number of the index folder path
+     * @throws IOException
+     */
+    public void startIndization(String path,int num) throws IOException {
       final File inputFile = new File(path);
       FileReader  fr = new FileReader (inputFile);
       BufferedReader  br1 = new BufferedReader(fr);
@@ -257,7 +263,7 @@ public class Normalization {
         Matcher matcher = pattern.matcher(line);
         if(matcher.find() && con<=i){
           con++;
-          createTempFile(text,lineaInicial);
+          createTempFile(text,lineaInicial,num);
           System.out.println("Aquí termina"+"->"+con+" ");
           text="";
           line="";

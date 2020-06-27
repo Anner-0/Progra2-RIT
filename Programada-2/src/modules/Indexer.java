@@ -31,16 +31,24 @@ import org.apache.lucene.store.FSDirectory;
 public class Indexer {
     URL url;
     List<Document> documents= new ArrayList<>();
-    
+    public Integer numeroDocumento;
+
+
     public Indexer(){// el constructor de la clase
         this.url=new URL();
+        this.numeroDocumento=0;
     }
 
     
 
-    public void createDocument(Integer posInicial,String body,String ref,String title,String encab) {// this method set documents that will be stored on the index
+    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath)throws IOException {// this method set documents that will be stored on the index
+        if(documents.size()==1000){
+            this.createIndexBlock(numpath);
+        }
+
         Document document = new Document();// crea el documento
         document.add(new StringField("posInicial",posInicial.toString(),Field.Store.YES));// crea los bloques que va a tener el documento
+        document.add(new StringField("idDocument",this.numeroDocumento.toString(),Field.Store.YES));
         document.add(new TextField("titulo", title, Field.Store.YES));
         document.add(new TextField("encab",encab,Field.Store.YES));
         document.add(new TextField("texto",body,Field.Store.YES));
@@ -77,11 +85,22 @@ public class Indexer {
 
     public void createIndex(int num) throws Exception {
         IndexWriter writer = this.selectIndexWriter(num);
-        writer.deleteAll();
+        //writer.deleteAll();
         writer.addDocuments(this.documents);
         writer.commit();
         writer.close();
         System.out.println("Index Created With: "+documents.size()+" documents");
+    }
+
+
+    private void createIndexBlock(int num) throws IOException {
+        IndexWriter writer = this.selectIndexWriter(num);
+        writer.addDocuments(this.documents);
+        writer.commit();
+        writer.close();
+        System.out.println("Index Created With: "+documents.size()+" documents");
+        this.documents.clear();
+
     }
     
 
