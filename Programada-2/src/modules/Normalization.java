@@ -145,8 +145,9 @@ public class Normalization {
 
     
 
-    public void readLabel(String label, String toIndex, String path) throws IOException{
+    public void readLabel(String label, String path) throws IOException{
       String text="";  
+      String toIndex="";
       // load file
       final File inputFile = new File(path);
       // parse file as HTML document
@@ -160,22 +161,21 @@ public class Normalization {
       }
       String text1 = eliminateStopWords(text);
       toIndex=getPattern(text1, toIndex);
-      // if(label=="a"){
-      //   this.toIndexA=toIndex;
-      //   //indexer.createDocument("ref",toIndex);
-      // }
-      // if(label=="title"){
-      //   this.toIndexTitle=toIndex;
-      //   //indexer.createDocument("titulo", toIndex);
-      // }
+      if(label=="a"){
+        this.toIndexA=toIndex;
+      }
+      if(label=="title"){
+        this.toIndexTitle=toIndex;
+        // System.out.println(toIndexTitle);
+      }
     }
 
     public void readTitle(String path) throws IOException {
-       readLabel("title", toIndexTitle, path);
+       readLabel("title", path);
     }
 
     public void readA(String path) throws IOException {
-      readLabel("a", toIndexA, path);
+      readLabel("a", path);
     }
 
     public void readBody(String path) throws IOException {

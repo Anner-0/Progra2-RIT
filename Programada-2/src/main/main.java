@@ -24,17 +24,17 @@ public class main {
 
 
     public static void main(final String[] args) throws Exception {
-        // Normalization aux = new Normalization();  
-        // URL path = new URL();
-        // String pathDirp1 = path.pathp1;
-        // String pathDirp2 = path.pathp2;
-        // String pathDirg1 = path.pathg1;
-        // String pathDirg2 = path.pathg2;
-        // aux.startIndization(pathDirp2);
-        // aux.indexer.createIndex(1);
-        Searcher searcher= new Searcher(1);
-        searcher.search("Wikipedia");
-        searcher.visualizeTopDocs("titulo");
+        Normalization aux = new Normalization();  
+        URL path = new URL();
+        String pathDirp1 = path.pathp1;
+        String pathDirp2 = path.pathp2;
+        String pathDirg1 = path.pathg1;
+        String pathDirg2 = path.pathg2;
+        aux.startIndization(pathDirg2);
+        aux.indexer.createIndex(3);
+        // Searcher searcher= new Searcher(0);
+        // searcher.search("titulo:zetachh");
+        // searcher.visualizeTopDocs("titulo");
         
     }
 
