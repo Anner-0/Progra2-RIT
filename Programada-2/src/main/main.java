@@ -33,8 +33,8 @@ public class main {
         // aux.startIndization(pathDirp2);
         // aux.indexer.createIndex(1);
         Searcher searcher= new Searcher(1);
-        searcher.search("encab:Zeta~4");
-        searcher.visualizeTopDocs("encab");
+        searcher.search("Wikipedia");
+        searcher.visualizeTopDocs("titulo");
         
     }
 

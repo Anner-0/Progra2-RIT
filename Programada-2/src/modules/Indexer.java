@@ -7,6 +7,7 @@ package modules;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 
 import java.io.IOException;
@@ -37,10 +38,13 @@ public class Indexer {
 
     
 
-    public void createDocument(String labelName,String data) {// this method set documents that will be stored on the index
-        //System.out.println(data);
+    public void createDocument(Integer posInicial,String body,String ref,String title,String encab) {// this method set documents that will be stored on the index
         Document document = new Document();// crea el documento
-        document.add(new TextField(labelName,data,Field.Store.YES));// crea los bloques que va a tener el documento
+        document.add(new StringField("posInicial",posInicial.toString(),Field.Store.YES));// crea los bloques que va a tener el documento
+        document.add(new TextField("titulo", title, Field.Store.YES));
+        document.add(new TextField("encab",encab,Field.Store.YES));
+        document.add(new TextField("texto",body,Field.Store.YES));
+        document.add(new TextField("ref",ref,Field.Store.YES));
         //document.add(new TextField("DATA",data,Field.Store.YES));
         this.documents.add(document);
     }   

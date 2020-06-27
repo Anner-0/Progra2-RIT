@@ -114,11 +114,12 @@ public class Normalization {
       return result;
   }
 
-    public void readText(String path) throws IOException {
+    public void readText(String path,Integer posInicial) throws IOException {
       readTitle(path);
       readA(path);
       readH(path);
       readBody(path);
+      this.indexer.createDocument(posInicial, this.toIndexBody,this.toIndexA,this.toIndexTitle, this.toIndexH);
     }
 
     public String getPattern(String text, String toIndex){
@@ -159,9 +160,14 @@ public class Normalization {
       }
       String text1 = eliminateStopWords(text);
       toIndex=getPattern(text1, toIndex);
-      if(label=="a"){indexer.createDocument("ref",toIndex);}
-      if(label=="title"){indexer.createDocument("titulo", toIndex);}
-      
+      // if(label=="a"){
+      //   this.toIndexA=toIndex;
+      //   //indexer.createDocument("ref",toIndex);
+      // }
+      // if(label=="title"){
+      //   this.toIndexTitle=toIndex;
+      //   //indexer.createDocument("titulo", toIndex);
+      // }
     }
 
     public void readTitle(String path) throws IOException {
@@ -190,7 +196,7 @@ public class Normalization {
       text=getPatternToAnalize(text1);
       // String result = analyze(text);
       toIndexBody=text;
-      indexer.createDocument("texto",toIndexBody);
+      //indexer.createDocument("texto",toIndexBody);
       //System.out.println(toIndexBody);
     }
 
@@ -216,17 +222,17 @@ public class Normalization {
             result+=text;
         }
         toIndexH+=text;
-        indexer.createDocument("encab",text);
+        //indexer.createDocument("encab",text);
     }
 
-    public void createTempFile(String text) throws IOException {
+    public void createTempFile(String text,Integer inicial) throws IOException {
       final URL path = new URL();
       File file = new File(path.temp);
       file.createNewFile();
       BufferedWriter bw = new BufferedWriter(new FileWriter(file));
       bw.write(text);
       bw.close();
-      readText(file.getAbsolutePath());
+      readText(file.getAbsolutePath(),inicial);
       
       file.delete();
 
@@ -243,18 +249,22 @@ public class Normalization {
       String line;
       int i=1000000;
       int con=0;
+      int lineaInicial=0;
+      int cuentalineas=0;
       String regex = ".*<\\/html>";
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
         if(matcher.find() && con<=i){
           con++;
-          createTempFile(text);
+          createTempFile(text,lineaInicial);
           System.out.println("Aquí termina"+"->"+con+" ");
           text="";
           line="";
+          lineaInicial=cuentalineas;
         }else{
           text+=line;
+          cuentalineas++;
         }
       }
 

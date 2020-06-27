@@ -71,6 +71,7 @@ public class Searcher {
         QueryParser qp = new QueryParser("texto", new SpanishAnalyzer());
         Query query = qp.parse(datatoSearch);
         TopDocs hits = this.indexSearcher.search(query, 20);
+        this.lastTopSearch=hits;
         System.out.println("Total Results :: " + hits.totalHits);
         // for (ScoreDoc sd : hits.scoreDocs) 
         // {
@@ -79,7 +80,7 @@ public class Searcher {
         //     // System.out.println("------------------------------------------------------");
         //     // System.out.println(String.format(d.get("body")));
         // }
-        this.lastTopSearch=hits;
+        
         return hits;
     }
 
