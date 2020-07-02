@@ -23,18 +23,19 @@ public class main {
      */
 
 
-    public static void main(final String[] args) throws Exception {
-        Normalization aux = new Normalization();  
-        URL path = new URL();
-        String pathDirp1 = path.pathp1;
-        String pathDirp2 = path.pathp2;
-        String pathDirg1 = path.pathg1;
-        String pathDirg2 = path.pathg2;
-        aux.startIndization(pathDirg1,2);
-        aux.indexer.createIndex(2);
-         Searcher searcher= new Searcher(2);
-        searcher.search("wikipedia");
-        searcher.visualizeTopDocs("titulo"); 
+    public static void main(String[] args) throws Exception {
+        // Normalization aux = new Normalization();  
+        // URL path = new URL();
+        // String pathDirp1 = path.pathp1;
+        // String pathDirp2 = path.pathp2;
+        // String pathDirg1 = path.pathg1;
+        // String pathDirg2 = path.pathg2;
+        // aux.startIndization(pathDirp2,1);
+        // aux.indexer.createIndex(1);
+         Searcher searcher= new Searcher(1);
+        searcher.search("Zetachh");
+        searcher.visualizeTopDocs("titulo");
+         searcher.openHTML(0);
     }
 
 }

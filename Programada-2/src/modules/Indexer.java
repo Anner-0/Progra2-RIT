@@ -36,7 +36,7 @@ public class Indexer {
 
     public Indexer(){// el constructor de la clase
         this.url=new URL();
-        this.numeroDocumento=0;
+        this.numeroDocumento=1;
     }
 
     
@@ -45,7 +45,6 @@ public class Indexer {
         if(documents.size()==1000){
             this.createIndexBlock(numpath);
         }
-
         Document document = new Document();// crea el documento
         document.add(new StringField("posInicial",posInicial.toString(),Field.Store.YES));// crea los bloques que va a tener el documento
         document.add(new StringField("idDocument",this.numeroDocumento.toString(),Field.Store.YES));
@@ -55,6 +54,7 @@ public class Indexer {
         document.add(new TextField("ref",ref,Field.Store.YES));
         //document.add(new TextField("DATA",data,Field.Store.YES));
         this.documents.add(document);
+        this.numeroDocumento++;
     }   
 
     

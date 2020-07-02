@@ -33,11 +33,13 @@ public class Searcher {
     public URL url = null;
     public IndexSearcher indexSearcher;
     public TopDocs lastTopSearch;
+    public List<Document> top;
     
     public Searcher(int num) throws IOException {
         this.url= new URL();
         this.indexSearcher=selectIndexSearch(num);
         this.lastTopSearch=null; 
+        this.top= new ArrayList<>();
     }
 
 
@@ -92,8 +94,25 @@ public class Searcher {
         {
             Document d = this.indexSearcher.doc(sd.doc);
              System.out.println("------------------------------------------------------"+"\n");
-            System.out.println(String.format(d.get(label)));
+             System.out.println(sd.doc);
+             System.out.println("Documento Numero: " +String.format(d.get("idDocument").toString()));
+             System.out.println(String.format(d.getField(label).toString()));
+             this.top.add(d);
         }
+    }
+
+    public void openHTML(int num) throws IOException {
+        Document d= top.get(num);
+        System.out.println(d.get("posInicial"));
+
+    }
+
+
+
+    public void retrieveTempHTML(int posInicial,int docNumber){//Estoy haciendo la funcion para levantar el html 
+        String URL= this.url.getURL(docNumber);
+
+
     }
 
 
