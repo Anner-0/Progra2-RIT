@@ -98,13 +98,15 @@ public class Searcher {
 
     public void visualizeTopDocs(String label) throws IOException {// este metodo pretende imprimir en consola el label
                                                                    // de los documetos que se recuperaron
+        int cont=1;
         for (ScoreDoc sd : this.lastTopSearch.scoreDocs) {
             Document d = this.indexSearcher.doc(sd.doc);
             System.out.println("------------------------------------------------------" + "\n");
-            System.out.println(sd.doc);
+            System.out.println(cont);
             System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
             System.out.println(String.format(d.get(label).toString()));
             this.top.add(d);
+            cont++;
         }
     }
 
@@ -118,14 +120,17 @@ public class Searcher {
 
     public void retrieveTempHTML(int posInicial, int docNumber) throws IOException, URISyntaxException {// Estoy
                                                                                                         // haciendo la
-        String URL = this.url.getURL(docNumber);
+        
+        System.out.println(docNumber);
+        // String URL = this.url.getURL(docNumber);
+        // System.out.println(URL);
         String doc = new String();
         String line = new String();
         String regex = ".*<\\/html>";
         int cont=0;
         Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        BufferedReader br = new BufferedReader(new FileReader(URL));
-        for (int i = 0; i < (posInicial - 1); i++){//saltar lineas hasta llegar a la linea deseeada
+        BufferedReader br = new BufferedReader(new FileReader(this.url.getURL(docNumber)));
+        for (int i = 0; i < (posInicial - 1); i++){//saltar lineas hasta llegar a la linea deseada
             br.readLine();
         }
         while ((line = br.readLine()) != null) {

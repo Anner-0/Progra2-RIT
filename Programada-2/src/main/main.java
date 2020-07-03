@@ -5,7 +5,9 @@
  */
 package main;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
+import java.util.concurrent.*;
 
 import modules.Normalization;
 import modules.Searcher;
@@ -23,25 +25,44 @@ public class main {
      */
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         Normalization aux = new Normalization();  
         URL path = new URL();
-        String pathDirp1 = path.pathp1;
-        String pathDirp2 = path.pathp2;
-        String pathDirg1 = path.pathg1;
-        String pathDirg2 = path.pathg2;
+        Scanner teclado = new Scanner(System.in);
 
-        //  aux.startIndization(pathDirp1,0);
-        //  aux.indexer.createIndex(0);
-        Searcher searcher= new Searcher(1);
-        // searcher.search("comunidad");
-        // searcher.visualizeTopDocs("titulo");
-        // searcher.openHTML(0,1);
+        // System.out.println("Ingrese la colección que desea ingresar, escribiendo p ó g y el número 1 ó 2");
+        // System.out.println("Ejemplo: p1");
+        // String data = teclado.nextLine();
+        // String pathDir = path.getPath(data); 
+        // int numToIndex = path.getNum(data);
 
-        //aux.indexer.actualiceIndex(pathDirp1, pathDirp2);
-        searcher.allDocuments();
+        // long startTime = System.nanoTime();
+        // aux.startIndization(pathDir,numToIndex);
+        // aux.indexer.createIndex(numToIndex);
+        // long stopTime = System.nanoTime();
+        // long realTime = stopTime - startTime;
+        // realTime = TimeUnit.SECONDS.convert(realTime, TimeUnit.NANOSECONDS);
+		// if(realTime<=60){
+        //     System.out.println("El tiempo de indexación es de: "+realTime+" segundos");
+        // }else{
+        //     System.out.println("El tiempo de indexación es de: "+TimeUnit.SECONDS.toSeconds(TimeUnit.SECONDS.toMinutes(realTime))+" minutos");
+        // }
 
+        System.out.println("Ingrese la colección que desea buscar, escribiendo p ó g y el número 1 ó 2");
+        System.out.println("Ejemplo: p1");
+        String dataSearch = teclado.nextLine();
+        int numToSearch = path.getNum(dataSearch);
+        Searcher searcher= new Searcher(numToSearch);
+
+        System.out.println("Ingrese el comando de búsqueda");
+        System.out.println("Ejemplo: zetachh");
+        String dataConsult = teclado.nextLine();
+        searcher.search(dataConsult);
+        searcher.visualizeTopDocs("titulo");
+
+        System.out.println("Ingrese numero de documento que desea visualizar en el navegador");
+        int docToView = Integer.parseInt(teclado.nextLine()); 
+        searcher.openHTML(docToView-1,numToSearch);
         
     }
-
 }

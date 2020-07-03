@@ -166,7 +166,6 @@ public class Normalization {
       }
       if(label=="title"){
         this.toIndexTitle=toIndex;
-        // System.out.println(toIndexTitle);
       }
     }
 
@@ -197,7 +196,7 @@ public class Normalization {
       // String result = analyze(text);
       toIndexBody=text;
       //indexer.createDocument("texto",toIndexBody);
-      //System.out.println(toIndexBody);
+      // System.out.println(toIndexBody);
     }
 
     public void readH(String path) throws IOException {

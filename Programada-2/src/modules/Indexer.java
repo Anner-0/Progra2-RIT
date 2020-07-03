@@ -47,7 +47,7 @@ public class Indexer {
     
 
     public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath)throws IOException {// this method set documents that will be stored on the index
-        if(documents.size()==1000){
+        if(documents.size()==2000){
             this.createIndexBlock(numpath);
         }
         Document document = new Document();// crea el documento
