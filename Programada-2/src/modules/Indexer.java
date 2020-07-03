@@ -5,6 +5,8 @@
  */
 package modules;
 
+import modules.Searcher;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -21,7 +23,10 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 
 /**
@@ -102,6 +107,30 @@ public class Indexer {
         this.documents.clear();
 
     }
+
+    public void actualiceIndex(String pathFrom,String pathTo) throws Exception {
+        int indexPathFrom = url.getIndexLocation(pathFrom);
+        int indexPathTo = url.getIndexLocation(pathTo);
+        Searcher searcher = new Searcher(indexPathFrom);
+        TopDocs allDocuments=searcher.allDocuments();
+        this.documents.clear();
+        for (ScoreDoc sd : allDocuments.scoreDocs) {
+            Document d = searcher.indexSearcher.doc(sd.doc); 
+            this.documents.add(d);
+            if(this.documents.size()==1000){
+                this.createIndexBlock(indexPathTo);
+            }
+        }
+        this.createIndex(indexPathTo);
+    }
+
+
+    
+
+
+
+
+
     
 
     

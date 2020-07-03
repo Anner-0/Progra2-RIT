@@ -24,18 +24,23 @@ public class main {
 
 
     public static void main(String[] args) throws Exception {
-        // Normalization aux = new Normalization();  
-        // URL path = new URL();
-        // String pathDirp1 = path.pathp1;
-        // String pathDirp2 = path.pathp2;
-        // String pathDirg1 = path.pathg1;
-        // String pathDirg2 = path.pathg2;
-        // aux.startIndization(pathDirp2,1);
-        // aux.indexer.createIndex(1);
-         Searcher searcher= new Searcher(1);
-        searcher.search("Zetachh");
-         searcher.visualizeTopDocs("titulo");
-        searcher.openHTML(0,1);
+        Normalization aux = new Normalization();  
+        URL path = new URL();
+        String pathDirp1 = path.pathp1;
+        String pathDirp2 = path.pathp2;
+        String pathDirg1 = path.pathg1;
+        String pathDirg2 = path.pathg2;
+
+        //  aux.startIndization(pathDirp1,0);
+        //  aux.indexer.createIndex(0);
+        Searcher searcher= new Searcher(1);
+        // searcher.search("comunidad");
+        // searcher.visualizeTopDocs("titulo");
+        // searcher.openHTML(0,1);
+
+        //aux.indexer.actualiceIndex(pathDirp1, pathDirp2);
+        searcher.allDocuments();
+
         
     }
 

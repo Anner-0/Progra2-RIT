@@ -27,6 +27,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -147,6 +148,16 @@ public class Searcher {
 
         }   
     }
+
+    public TopDocs allDocuments() throws IOException {
+        Query query = new MatchAllDocsQuery();
+        //IndexSearcher indexS= createSearcher(pathFrom);
+        TopDocs hits = this.indexSearcher.search(query, 1000000);
+        //TopDocs hits1 = indexS.search(query, 1000000);
+        System.out.println("Total Results :: " + hits.totalHits);
+        return hits;
+    }
+
 
        
 //end of class
