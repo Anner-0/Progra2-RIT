@@ -46,8 +46,8 @@ public class Indexer {
 
     
 
-    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath, int numDoc)throws IOException {// this method set documents that will be stored on the index
-        if(documents.size()==2000){
+    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath)throws IOException {// this method set documents that will be stored on the index
+        if(documents.size()==1000){
             this.createIndexBlock(numpath);
         }
         String identification=url.getURL(numpath);
@@ -62,6 +62,7 @@ public class Indexer {
         //document.add(new TextField("DATA",data,Field.Store.YES));
         this.documents.add(document);
         this.numeroDocumento++;
+        document=null;
     }   
 
     
