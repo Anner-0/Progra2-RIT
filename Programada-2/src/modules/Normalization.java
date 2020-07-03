@@ -114,12 +114,12 @@ public class Normalization {
       return result;
   }
 
-    public void readText(String path,Integer posInicial,int numpath) throws IOException {
+    public void readText(String path,Integer posInicial,int numpath, int numDoc) throws IOException {
       readTitle(path);
       readA(path);
       readH(path);
       readBody(path);
-      this.indexer.createDocument(posInicial, this.toIndexBody,this.toIndexA,this.toIndexTitle, this.toIndexH,numpath);
+      this.indexer.createDocument(posInicial, this.toIndexBody,this.toIndexA,this.toIndexTitle, this.toIndexH,numpath, numDoc);
     }
 
     public String getPattern(String text, String toIndex){
@@ -224,14 +224,14 @@ public class Normalization {
         //indexer.createDocument("encab",text);
     }
 
-    public void createTempFile(String text,Integer inicial,int numpath) throws IOException {
+    public void createTempFile(String text,Integer inicial,int numpath, int numDoc) throws IOException {
       final URL path = new URL();
       File file = new File(path.temp);
       file.createNewFile();
       BufferedWriter bw = new BufferedWriter(new FileWriter(file));
       bw.write(text);
       bw.close();
-      readText(file.getAbsolutePath(),inicial,numpath);
+      readText(file.getAbsolutePath(),inicial,numpath, numDoc);
       file.delete();
 
     }
@@ -250,7 +250,7 @@ public class Normalization {
       // Lectura del fichero
       String line;
       int i=1000000;
-      int con=0;
+      int con=1;
       int lineaInicial=1;
       int cuentalineas=1;
       String regex = ".*<\\/html>";
@@ -258,7 +258,7 @@ public class Normalization {
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
         if(matcher.find() && con<=i){ 
-          createTempFile(text,lineaInicial,num);
+          createTempFile(text,lineaInicial,num, con);
           System.out.println("Aquí termina"+"->"+con+" ");
           con++;
           text="";

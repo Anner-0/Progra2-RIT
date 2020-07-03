@@ -121,9 +121,7 @@ public class Searcher {
     public void retrieveTempHTML(int posInicial, int docNumber) throws IOException, URISyntaxException {// Estoy
                                                                                                         // haciendo la
         
-        System.out.println(docNumber);
         // String URL = this.url.getURL(docNumber);
-        // System.out.println(URL);
         String doc = new String();
         String line = new String();
         String regex = ".*<\\/html>";

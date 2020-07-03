@@ -46,13 +46,15 @@ public class Indexer {
 
     
 
-    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath)throws IOException {// this method set documents that will be stored on the index
+    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath, int numDoc)throws IOException {// this method set documents that will be stored on the index
         if(documents.size()==2000){
             this.createIndexBlock(numpath);
         }
+        String identification=url.getURL(numpath);
         Document document = new Document();// crea el documento
         document.add(new StringField("posInicial",posInicial.toString(),Field.Store.YES));// crea los bloques que va a tener el documento
-        document.add(new StringField("idDocument",this.numeroDocumento.toString(),Field.Store.YES));
+        document.add(new StringField("idDocument",String.valueOf(numDoc),Field.Store.YES));
+        document.add(new StringField("identification",identification,Field.Store.YES));
         document.add(new TextField("titulo", title, Field.Store.YES));
         document.add(new TextField("encab",encab,Field.Store.YES));
         document.add(new TextField("texto",body,Field.Store.YES));
