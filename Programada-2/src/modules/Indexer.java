@@ -112,8 +112,8 @@ public class Indexer {
     }
 
     public void actualiceIndex(String pathFrom,String pathTo) throws Exception {
-        int indexPathFrom = url.getIndexLocation(pathFrom);
-        int indexPathTo = url.getIndexLocation(pathTo);
+        int indexPathFrom = url.getNum(pathFrom);
+        int indexPathTo = url.getNum(pathTo);
         Searcher searcher = new Searcher(indexPathFrom);
         TopDocs allDocuments=searcher.allDocuments();
         this.documents.clear();
