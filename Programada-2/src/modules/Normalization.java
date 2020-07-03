@@ -46,26 +46,26 @@ public class Normalization {
     }
 
 
-    private String Stem(final String data) {
+    private String Stem(String data) {
 
       return data;
 
     }
 
     public List<String> createListStopWords() {
-      final List<String> stopWords = new ArrayList<>();
-      final URL rutaStopwords = new URL();
+      List<String> stopWords = new ArrayList<>();
+      URL rutaStopwords = new URL();
 
       try {
-        final File archivo = new File(rutaStopwords.stopwords);
-        final Scanner scannercito = new Scanner(archivo);
+        File archivo = new File(rutaStopwords.stopwords);
+        Scanner scannercito = new Scanner(archivo);
         while (scannercito.hasNextLine()) {
-          final String data = scannercito.nextLine();
+          String data = scannercito.nextLine();
           stopWords.add(data);
 
         }
         scannercito.close();
-      } catch (final FileNotFoundException e) {
+      } catch (FileNotFoundException e) {
         System.out.println("An error occurred.");
         e.printStackTrace();
       }
@@ -74,10 +74,10 @@ public class Normalization {
     }
 
     public String eliminateStopWords(final String data) {
-      final List<String> stopWords = createListStopWords();
-      final List<String> allWords = new ArrayList<>();
+       List<String> stopWords = createListStopWords();
+      List<String> allWords = new ArrayList<>();
       String result="";
-      for (final String word : data.split(" ")) {
+      for (String word : data.split(" ")) {
         allWords.add(word);
       }
       allWords.removeAll(stopWords);
@@ -88,7 +88,7 @@ public class Normalization {
       return result;
     }
 
-    public String cleanString(final String line) {
+    public String cleanString(String line) {
       String cleanText ="";
       if (line !=null) {
           // Normalizar texto para eliminar acentos, dieresis, cedillas y tildes
@@ -159,8 +159,8 @@ public class Normalization {
             final String Word=cleanString(iter.next().toString().replaceAll("\\<.*?\\>", "").toLowerCase());
             text+=Word+" ";
       }
-      String text1 = eliminateStopWords(text);
-      toIndex=getPattern(text1, toIndex);
+      //String text1 = eliminateStopWords(text);
+      toIndex=getPattern(text, toIndex);
       if(label=="a"){
         this.toIndexA=toIndex;
       }
@@ -233,7 +233,6 @@ public class Normalization {
       bw.write(text);
       bw.close();
       readText(file.getAbsolutePath(),inicial,numpath);
-      
       file.delete();
 
     }
@@ -248,25 +247,24 @@ public class Normalization {
       final File inputFile = new File(path);
       FileReader  fr = new FileReader (inputFile);
       BufferedReader  br1 = new BufferedReader(fr);
-
       String text="";
-
       // Lectura del fichero
       String line;
       int i=1000000;
       int con=0;
-      int lineaInicial=0;
-      int cuentalineas=0;
+      int lineaInicial=1;
+      int cuentalineas=1;
       String regex = ".*<\\/html>";
       Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       while((line=br1.readLine())!=null){
         Matcher matcher = pattern.matcher(line);
-        if(matcher.find() && con<=i){
-          con++;
+        if(matcher.find() && con<=i){ 
           createTempFile(text,lineaInicial,num);
           System.out.println("Aquí termina"+"->"+con+" ");
+          con++;
           text="";
           line="";
+          cuentalineas=cuentalineas+1;
           lineaInicial=cuentalineas;
         }else{
           text+=line;

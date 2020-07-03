@@ -34,8 +34,9 @@ public class main {
         // aux.indexer.createIndex(1);
          Searcher searcher= new Searcher(1);
         searcher.search("Zetachh");
-        searcher.visualizeTopDocs("titulo");
-         searcher.openHTML(0);
+         searcher.visualizeTopDocs("titulo");
+        searcher.openHTML(0,1);
+        
     }
 
 }
