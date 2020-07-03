@@ -102,8 +102,10 @@ public class Searcher {
         for (ScoreDoc sd : this.lastTopSearch.scoreDocs) {
             Document d = this.indexSearcher.doc(sd.doc);
             System.out.println("------------------------------------------------------" + "\n");
+            System.out.print("Top: ");
             System.out.println(cont);
             System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
+            System.out.println("Posicion Inicial: " + String.format(d.get("posInicial").toString()));
             System.out.println(String.format(d.get(label).toString()));
             this.top.add(d);
             cont++;
@@ -143,7 +145,8 @@ public class Searcher {
                 //System.out.println(doc);
                 URI uri = new URI("file:///" + this.url.temp);
                 uri.normalize();
-                Desktop.getDesktop().browse(uri);    
+                Desktop.getDesktop().browse(uri);
+                return;
             }
             else{
                 doc+=line;

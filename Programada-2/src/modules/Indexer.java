@@ -46,7 +46,7 @@ public class Indexer {
 
     
 
-    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath)throws IOException {// this method set documents that will be stored on the index
+    public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath,int numDoc)throws IOException {// this method set documents that will be stored on the index
         if(documents.size()==1000){
             this.createIndexBlock(numpath);
         }
@@ -98,6 +98,7 @@ public class Indexer {
         writer.commit();
         writer.close();
         System.out.println("Index Created With: "+documents.size()+" documents");
+        this.documents.clear();
     }
 
 

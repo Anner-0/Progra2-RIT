@@ -93,7 +93,7 @@ public class main {
                     System.out.println("Ejemplo: zetachh");
                     String dataConsult = teclado.nextLine();
                     searcher.search(dataConsult);
-                    searcher.visualizeTopDocs("titulo");
+                    searcher.visualizeTopDocs("encab");
 
                     System.out.println("\nDesea visualizar un documento en el navegador?\n1 = si\n2 = no");
                     int browser = Integer.valueOf(teclado.nextLine());
