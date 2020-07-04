@@ -196,12 +196,13 @@ public class Normalization {
       // String result = analyze(text);
       toIndexBody=text;
       //indexer.createDocument("texto",toIndexBody);
-      // System.out.println(toIndexBody);
+      //System.out.println(toIndexBody);
     }
 
     public void readH(String path) throws IOException {
         String text="";
         String result="";
+        toIndexH="";
         // load file
         final File inputFile = new File(path);
         // parse file as HTML document
@@ -259,7 +260,7 @@ public class Normalization {
         Matcher matcher = pattern.matcher(line);
         if(matcher.find() && con<=i){ 
           createTempFile(text,lineaInicial,num, con);
-          System.out.println("Aquí termina"+"->"+con+" ");
+          //System.out.println("Aquí termina"+"->"+con+" ");
           con++;
           text="";
           line="";

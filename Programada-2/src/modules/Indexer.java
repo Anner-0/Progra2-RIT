@@ -13,11 +13,13 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -43,8 +45,6 @@ public class Indexer {
         this.url=new URL();
         this.numeroDocumento=1;
     }
-
-    
 
     public void createDocument(Integer posInicial,String body,String ref,String title,String encab,int numpath,int numDoc)throws IOException {// this method set documents that will be stored on the index
         if(documents.size()==1000){

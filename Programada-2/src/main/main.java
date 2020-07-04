@@ -53,11 +53,12 @@ public class main {
                         long stopTime = System.nanoTime();
                         long realTime = stopTime - startTime;
                         realTime = TimeUnit.SECONDS.convert(realTime, TimeUnit.NANOSECONDS);
-                        if(realTime<=60){
+                            // if(realTime<=60){
+                            //     System.out.println("El tiempo de indexación es de: "+realTime+" segundos");
+                            // }else{
+                            //     System.out.println("El tiempo de indexación es de: "+TimeUnit.SECONDS.toSeconds(TimeUnit.SECONDS.toMinutes(realTime))+" minutos");
+                            // }
                             System.out.println("El tiempo de indexación es de: "+realTime+" segundos");
-                        }else{
-                            System.out.println("El tiempo de indexación es de: "+TimeUnit.SECONDS.toSeconds(TimeUnit.SECONDS.toMinutes(realTime))+" minutos");
-                        }
                     }
                 }else if(index==2){
                     System.out.println("\nIngrese la colección que se actualizará\nEjemplo p1 ó g1");
@@ -93,7 +94,14 @@ public class main {
                     System.out.println("Ejemplo: zetachh");
                     String dataConsult = teclado.nextLine();
                     searcher.search(dataConsult);
-                    searcher.visualizeTopDocs("encab");
+                    searcher.visualizeTopDocs("te2xto",20);// se cambia para que muestre lo que quiere por default
+                    System.out.println("Desea ver mas resultados? \n1 = si\n2 = no");
+                    int response1 = Integer.valueOf(teclado.nextLine());
+                    if(response1 ==1){
+                        searcher.visualizeTopDocs("texto",40);
+                    }
+
+
 
                     System.out.println("\nDesea visualizar un documento en el navegador?\n1 = si\n2 = no");
                     int browser = Integer.valueOf(teclado.nextLine());

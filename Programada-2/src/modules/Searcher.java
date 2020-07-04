@@ -34,6 +34,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import jdk.nashorn.internal.runtime.regexp.joni.ast.QuantifierNode;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -81,7 +83,7 @@ public class Searcher {
     public TopDocs search(String datatoSearch) throws Exception {
         QueryParser qp = new QueryParser("texto", new SpanishAnalyzer());
         Query query = qp.parse(datatoSearch);
-        TopDocs hits = this.indexSearcher.search(query, 20);
+        TopDocs hits = this.indexSearcher.search(query, 40);
         this.lastTopSearch = hits;
         System.out.println("Total Results :: " + hits.totalHits);
         // for (ScoreDoc sd : hits.scoreDocs)
@@ -96,21 +98,41 @@ public class Searcher {
         return hits;
     }
 
-    public void visualizeTopDocs(String label) throws IOException {// este metodo pretende imprimir en consola el label
-                                                                   // de los documetos que se recuperaron
+    public void visualizeTopDocs(String label,int quantity) throws IOException {// este metodo pretende imprimir en consola el label
+                                                        // de los documetos que se recuperaron
         int cont=1;
-        for (ScoreDoc sd : this.lastTopSearch.scoreDocs) {
-            Document d = this.indexSearcher.doc(sd.doc);
-            System.out.println("------------------------------------------------------" + "\n");
-            System.out.print("Top: ");
-            System.out.println(cont);
-            System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
-            System.out.println("Posicion Inicial: " + String.format(d.get("posInicial").toString()));
-            System.out.println(String.format(d.get(label).toString()));
-            this.top.add(d);
-            cont++;
+        int pos=0;
+        if(quantity==40){//para cuanto 
+            pos=20;
+            cont=21;
+        }  
+        this.saveDocsRetrieved();
+        for (int i=pos; i<this.top.size();i++) {
+            if(i<quantity){
+                Document d = this.top.get(i);
+                System.out.println("------------------------------------------------------" + "\n");
+                System.out.print("Top: ");
+                System.out.println(cont);
+                System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
+                System.out.println("Posicion Inicial: " + String.format(d.get("posInicial").toString()));
+                System.out.println("Documenti: " + String.format(d.get("identification").toString()));
+                System.out.println(String.format(d.get(label).toString()));
+                this.top.add(d);
+                cont++;
+
+            }
+
         }
     }
+
+    public void saveDocsRetrieved() throws IOException {
+        for (ScoreDoc sd : this.lastTopSearch.scoreDocs) {
+            Document d = this.indexSearcher.doc(sd.doc);
+            this.top.add(d);
+        }
+    }
+
+
 
     public void openHTML(int num, int docNumber) throws IOException, URISyntaxException {
         Document d = top.get(num);
