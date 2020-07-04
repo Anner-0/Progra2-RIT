@@ -123,7 +123,7 @@ public class Normalization {
     }
 
     public String getPattern(String text, String toIndex){
-      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final String regex = "\\s?([A-Za-zñ]{2,})\\s?";
       final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       Matcher matcher = pattern.matcher(text);
       while (matcher.find()) {
@@ -133,7 +133,7 @@ public class Normalization {
     }
 
     public String getPatternToAnalize(String text){
-      final String regex = "\\s?([A-Za-z]{2,})\\s?";
+      final String regex = "\\s?([A-Za-zñ]{2,})\\s?";
       final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
       String text1="";
       Matcher matcher = pattern.matcher(text);

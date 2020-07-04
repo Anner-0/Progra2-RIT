@@ -113,11 +113,10 @@ public class Searcher {
                 System.out.println("------------------------------------------------------" + "\n");
                 System.out.print("Top: ");
                 System.out.println(cont);
-                System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
-                System.out.println("Posicion Inicial: " + String.format(d.get("posInicial").toString()));
-                System.out.println("Documenti: " + String.format(d.get("identification").toString()));
+                //System.out.println("Documento Numero: " + String.format(d.get("idDocument").toString()));
+                //System.out.println("Posicion Inicial: " + String.format(d.get("posInicial").toString()));
+                //System.out.println("Documenti: " + String.format(d.get("identification").toString()));
                 System.out.println(String.format(d.get(label).toString()));
-                this.top.add(d);
                 cont++;
 
             }

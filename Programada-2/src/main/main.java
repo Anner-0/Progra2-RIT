@@ -94,11 +94,11 @@ public class main {
                     System.out.println("Ejemplo: zetachh");
                     String dataConsult = teclado.nextLine();
                     searcher.search(dataConsult);
-                    searcher.visualizeTopDocs("te2xto",20);// se cambia para que muestre lo que quiere por default
-                    System.out.println("Desea ver mas resultados? \n1 = si\n2 = no");
+                    searcher.visualizeTopDocs("titulo",20);// se cambia para que muestre lo que quiere por default
+                    System.out.println("\nDesea ver mas resultados? \n1 = si\n2 = no");
                     int response1 = Integer.valueOf(teclado.nextLine());
                     if(response1 ==1){
-                        searcher.visualizeTopDocs("texto",40);
+                        searcher.visualizeTopDocs("titulo",40);
                     }
 
 
